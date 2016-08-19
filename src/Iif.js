@@ -1,7 +1,7 @@
 /* iif function
   Inference if functionality
 
-an inference function takes a knowledge base of rules, facts and kbstate
+an inference function takes a knowledge base of procedural rules, facts, kbstate
 and produces a conclusion from an initial state. States can be altered
 as inference runs. Inference ends when no rule fires.
 
