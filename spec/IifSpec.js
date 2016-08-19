@@ -4,23 +4,26 @@ var Iif = require('../src/Iif.js');
 
 describe("Iif functionality", function () {
 
-  // benchmark flip-flop rules, without a fact stack 
+  // benchmark flip-flop rules, without a fact stack
   // test one million cycles of the rule engine
 
   var kbTest = {
-    locals: "this.maxCycles = 1000000; this.count = 0; this.stopAt = this.maxCycles; this.state = false;",
+    properties: "this.maxCycles = 1000000; this.count = 0; this.stopAt = this.maxCycles; this.state = false;",
     rules: [
-      { if: 'this.state === false',
+      { name: "Flip",
+             if: 'this.state === false',
              then: 'this.state = true; this.count++;',
              priority: 1,
              repeatable: true,
              because: 'Flips false state to true'},
-      { if: 'this.state === true',
+      { name: "Flop",
+        if: 'this.state === true',
              then: 'this.state = false; this.count++;',
              priority: 1,
              repeatable: true,
              because: 'Flips a true state to false'},
-      { if: 'this.count >= this.stopAt && this.running === true',
+      { name: "Count up to stop",
+        if: 'this.count >= this.stopAt && this.running === true',
              then: 'this.running = false;',
              priority: 10,
              because: 'Stop the engine with a stop rule because we have repeatable rules'}
@@ -29,6 +32,7 @@ describe("Iif functionality", function () {
 
   beforeEach( function () {
     iif = new Iif();
+    //iif.debug = true;
   });
 
   describe("Running without a KB", function (){

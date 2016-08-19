@@ -28,7 +28,7 @@ var txt =    "this.targetTemp = 22;" +
              "this.addEnergy = function () { return 20; };";
 
   var kbTempController = {
-    locals: txt,
+    properties: txt,
     name: "Temperature controller simple example",
     rules: [
       { name: 'Boost Heat',

@@ -5,7 +5,7 @@ an inference function takes a knowledge base of procedural rules, facts, kbstate
 and produces a conclusion from an initial state. States can be altered
 as inference runs. Inference ends when no rule fires.
 
- kb = {locals: 'string', rules: {}, (facts, {}, kbstate {}) };
+ kb = {properties: 'string', rules: {}, (facts, {}, kbstate {}) };
 
 */
 
@@ -14,9 +14,10 @@ var Iif = function () {
 }
 
 // load a knowledge base (rules plus facts)
+// also domain specific methods can be added
 Iif.prototype.load = function (kb) {
   this.name = kb.name || 'No Name Knowledge Base';
-  var txt = kb.locals;
+  var txt = kb.properties;
   eval(txt);
   this.rules = kb.rules;
   this.facts = kb.facts || {present: false};
@@ -26,6 +27,7 @@ Iif.prototype.load = function (kb) {
       kb.rules[r].repeatable = false;
     }
   }
+  this.priority = 0;
   this.kbstate = 'innactive';
   this.history = [];
   if(this.rules.constructor === Array) {
@@ -39,6 +41,8 @@ Iif.prototype.debug = function () {
   this.debug = false;
 };
 
+// Set when the possibility of infinite rule inference exists
+// forces the inference process to after maxCycles of the engine
 Iif.prototype.cycles = function () {
   this.cycles = 0;
 };
@@ -108,7 +112,7 @@ Iif.prototype.infer = function () {
             this.best = i;
             rule.priority = this.rules[this.best].priority;
             this.fired = true;
-            console.log('Setting Best Rule: ' + this.rules[this.best].name);
+            this.log('Setting Best Rule: ' + this.rules[this.best].name);
           }
         } // executeIf
       } // check fired or repeatable
