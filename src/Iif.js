@@ -1,4 +1,5 @@
 /* iif function
+
   Inference if functionality
 
 an inference function takes a knowledge base of procedural rules, facts, kbstate
@@ -23,8 +24,14 @@ Iif.prototype.load = function (kb) {
   this.facts = kb.facts || {present: false};
   for (var r=0; r < kb.rules.length; r++) {
     kb.rules[r].fired = 0;
+    if (!kb.rules[r].hasOwnProperty('name')) {
+      kb.rules[r].name = 'NoName';
+    }
     if (!kb.rules[r].hasOwnProperty('repeatable')) {
       kb.rules[r].repeatable = false;
+    }
+    if (!kb.rules[r].hasOwnProperty('priority')) {
+      kb.rules[r].priority = 1;
     }
   }
   this.priority = 0;
@@ -74,8 +81,10 @@ Iif.prototype.run = function () {
   }
   catch (error) {
     throw error;
+    return 0;
   }
   // run inference
+  // infer() returns the number of cycles the engine has run
   this.infer();
 };
 
@@ -128,13 +137,13 @@ Iif.prototype.infer = function () {
       this.log('Fired State: ' + this.best + ' => ' + this.rules[this.best].fired);
       //console.log('Fired rule: ' + this.best);
     }
+    this.cycles++;
     if (this.debug === true) {
       this.log('PRIORITY => ' + this.priority);
       this.log('RUNNING => ' + this.running);
       this.log('FIRED => ' + this.fired);
-      this.log('COUNT => ' + this.count);
+      this.log('CYCLES => ' + this.cycles);
     }
-    this.cycles++;
   } while (this.fired === true && this.running === true);
   // clean up
   return this.cycles;

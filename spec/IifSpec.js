@@ -4,6 +4,16 @@ var Iif = require('../src/Iif.js');
 
 describe("Iif functionality", function () {
 
+  var brokenKB = {
+    properties: 'this.result = "none"',
+    rules: [
+      {
+        if: 'true === true',
+        then: 'this.result = "passed"'
+      }
+    ],
+  };
+
   // benchmark flip-flop rules, without a fact stack
   // test one million cycles of the rule engine
 
@@ -41,6 +51,24 @@ describe("Iif functionality", function () {
         iif.run();
       }).toThrowError("IFF Error: cannot run, no knowledge base loaded");
     });
+  });
+
+  describe("Knowledge Base Structure and parts", function () {
+    it("Should load at least one rule and run", function () {
+      // iif.debug = true; // selectively use debug to see what happens here
+      iif.load(brokenKB);
+      iif.run();
+      // default values for name: and priority: added during loading
+      expect(iif.rules[0].name).toBe('NoName');
+      expect(iif.rules[0].priority).toBe(1);
+      // one rule fires and inference ends after completing the second cycle
+      // when no rule fires
+      expect(iif.cycles).toBe(2);
+      // the fired rule set a conclusion as a property of the iif object
+      expect(iif.result).toBe("passed");
+      // iif.debug = false;
+    });
+
   });
 
   describe("Loading a KB into the inference engine", function () {
