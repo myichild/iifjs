@@ -16,7 +16,7 @@ describe("Temperature controller rules", function () {
 // string + string across multiple lines does not work inside an object
 // declaration.
 var txt =    "this.targetTemp = 22;" +
-             "this.currentTemp = 18;" +
+             "this.currentTemp = 22;" +
              "this.externalTemp = 12;" +
              "this.solarGain = 28;" +
              "this.thermalImpedance = 1;" + // loss/gain in joules/hour/M^3
@@ -83,41 +83,45 @@ var txt =    "this.targetTemp = 22;" +
 
   });
 
-  xit("Should run without any input data for one cycle", function () {
+  it("Should run without any input data for one cycle", function () {
     // default settings require no-change to energy input or output
-    iifTC.debug = true;
+    // iifTC.debug = true;
     iifTC.run();
     console.log('Action: => ' + iifTC.action);
     expect(iifTC.cycles).toBe(2); // the stop rule ended the inference
     expect(iifTC.action).toBe('no-change');
     expect(iifTC.energy).toBe(0);
+    iifTC.debug = false;
   });
 
   it("Should conclude no-change when currentTemp = 22", function () {
-    iifTC.debug = true;
-    iifTC.temperature
+    // iifTC.debug = true;
+    iifTC.currentTemp = 22;
     iifTC.run();
     console.log('Action: => ' + iifTC.action);
     expect(iifTC.cycles).toBe(2); // the stop rule ended the inference
     expect(iifTC.action).toBe('no-change');
+    iifTC.debug = false;
   });
 
-  xit("Should conclude no-change when currentTemp = 21.78", function () {
-    iifTC.debug = true;
-    iifTC.temperature
+  it("Should conclude no-change when currentTemp = 21.78", function () {
+    // iifTC.debug = true;
+    iifTC.currentTemp = 21.79;
     iifTC.run();
     console.log('Action: => ' + iifTC.action);
     expect(iifTC.cycles).toBe(2); // the stop rule ended the inference
     expect(iifTC.action).toBe('no-change');
+    iifTC.debug = false;
   });
 
-  xit("Should conclude no-change when currentTemp = 21.7", function () {
-    iifTC.debug = true;
-    iifTC.temperature
+  it("Should conclude no-change when currentTemp = 21.7", function () {
+    // iifTC.debug = true;
+    iifTC.currentTemp = 21.7;
     iifTC.run();
     console.log('Action: => ' + iifTC.action);
     expect(iifTC.cycles).toBe(2); // the stop rule ended the inference
     expect(iifTC.action).toBe('heat');
+    iifTC.debug = false;
   });
 
 

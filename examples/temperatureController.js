@@ -22,7 +22,7 @@ var props =  "this.targetTemp = 22;" +
     name: "Temperature controller simple example",
     rules: [
       { name: 'Boost Heat',
-        if: 'this.currentTemp < this.targetTemp && this.targetTemp - this.currentTemp > + 7',
+        if: 'this.targetTemp - this.currentTemp > + 7',
         then: 'this.action = "boost-heat"; this.energy = this.addEnergy();',
         priority: 11,
         because: 'Conditions for boost-heat detected'
