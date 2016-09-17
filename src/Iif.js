@@ -9,20 +9,23 @@ as inference runs. Inference ends when no rule fires.
  kb = {properties: 'string', rules: {}, (facts, {}, kbstate {}) };
 
 */
+"use strict";
 
 var Iif = function () {
 
 }
 
 // load a knowledge base (rules plus facts)
-// also domain specific methods can be added
+// also domain specific methods can be added to the object if needed
+//
 Iif.prototype.load = function (kb) {
   this.name = kb.name || 'No Name Knowledge Base';
   var txt = kb.properties;
   eval(txt);
   this.rules = kb.rules;
   this.facts = kb.facts || {present: false};
-  for (var r=0; r < kb.rules.length; r++) {
+  var ruleLen = kb.rules.length;
+  for (var r=0; r < ruleLen; r++) {
     kb.rules[r].fired = 0;
     if (!kb.rules[r].hasOwnProperty('name')) {
       kb.rules[r].name = 'NoName';
@@ -44,12 +47,16 @@ Iif.prototype.load = function (kb) {
   }
 };
 
+// Print a trace of the inference process to the console
+// by setting to true.
+//
 Iif.prototype.debug = function () {
   this.debug = false;
 };
 
-// Set when the possibility of infinite rule inference exists
+// Set maxCycles when the possibility of infinite rule inference exists.
 // forces the inference process to after maxCycles of the engine
+//
 Iif.prototype.cycles = function () {
   this.cycles = 0;
 };
@@ -58,21 +65,28 @@ Iif.prototype.maxCycles = function () {
   this.maxCycles = 1000;
 };
 
+// log debug messages to the console
+//
 Iif.prototype.log = function (message) {
   if (this.debug === true) {
     console.log(message);
   }
 };
 
+// test and if: clause
+//
 Iif.prototype.executeIf = function (ifClause) {
   return eval(ifClause);
 };
 
+// execute a then clause
+//
 Iif.prototype.executeThen = function (thenClause) {
   return eval(thenClause);
 };
 
 // run the inference
+//
 Iif.prototype.run = function () {
   try {
     if (!this.kbLoaded === true) {
@@ -85,10 +99,10 @@ Iif.prototype.run = function () {
   }
   // run inference
   // infer() returns the number of cycles the engine has run
-  this.infer();
+  return this.infer();
 };
 
-// infer()
+// naive infer(), no forward or backward chaining to an hypothesis.
 // inference continues as long as a rule is fired
 //
 Iif.prototype.infer = function () {
@@ -105,7 +119,8 @@ Iif.prototype.infer = function () {
     // loop through all the rules executing each if clause
     //this.log('Rule stack => ' + this.rules.length);
     //console.log('Rule stack => ' + this.rules.length);
-    for(var i=0; i < this.rules.length; i++) {
+    var ruleLen = this.rules.length;
+    for(var i=0; i < ruleLen; i++) {
       var rule = this.rules[i];
       // if the rule has not fired previously or if the rule is repeatable then check it
       if(rule.fired < 1 || rule.repeatable === true){
@@ -150,6 +165,7 @@ Iif.prototype.infer = function () {
 };
 
 // find out the state of a fact from an outside source
+//
 Iif.prototype.ask = function (fact) {
 
 

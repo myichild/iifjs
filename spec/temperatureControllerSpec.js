@@ -1,3 +1,5 @@
+"use strict";
+
 var Iif = require('../src/Iif.js');
 
 /* tests for temp controller rules */
@@ -11,6 +13,8 @@ describe("Temperature controller rules", function () {
 
   The target is a volume whose temperature
 */
+
+var iifTC;
 
 // Object properties are built as string concatinations *outside* the kb object
 // string + string across multiple lines does not work inside an object
