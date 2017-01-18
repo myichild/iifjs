@@ -1,6 +1,6 @@
 /* backward chaining inference */
 
-var = animals = [
+var animals = [
 { if: 'it has hair',
   then: 'it is a mammal'},
 { if: 'it gives milk',
