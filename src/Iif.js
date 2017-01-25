@@ -9,6 +9,7 @@ as inference runs. Inference ends when no rule fires.
  kb = {properties: 'string', rules: {}, (facts, {}, kbstate {}) };
 
 */
+
 "use strict";
 
 var Iif = function () {
@@ -23,7 +24,7 @@ Iif.prototype.load = function (kb) {
   var txt = kb.properties;
   eval(txt);
   this.rules = kb.rules;
-  this.facts = kb.facts || {present: false};
+  this.facts = kb.facts || {_present: false};
   var ruleLen = kb.rules.length;
   for (var r=0; r < ruleLen; r++) {
     kb.rules[r].fired = 0;
@@ -73,7 +74,7 @@ Iif.prototype.log = function (message) {
   }
 };
 
-// test and if: clause
+// test an if: clause
 //
 Iif.prototype.executeIf = function (ifClause) {
   return eval(ifClause);
@@ -90,7 +91,7 @@ Iif.prototype.executeThen = function (thenClause) {
 Iif.prototype.run = function () {
   try {
     if (!this.kbLoaded === true) {
-      throw new Error("IFF Error: cannot run, no knowledge base loaded");
+      throw new Error("IIF Error: cannot run, no knowledge base loaded");
     }
   }
   catch (error) {
@@ -164,11 +165,88 @@ Iif.prototype.infer = function () {
   return this.cycles;
 };
 
+
+// provide a fact stack for the object, this may be overridden on creation
+Iif.prototype.factStack = {_present: false};
+
+Iif.prototype.present = function () {
+  if ( this.factStack._present === true ) {
+    return true;
+  } else {
+    return false;  
+  }
+
+};
+
 // find out the state of a fact from an outside source
-//
-Iif.prototype.ask = function (fact) {
+// the process of answering an assertion creates facts that have a value
+Iif.prototype.consoleQuery = function (consoleAssertion) {
+    var	query = require('cli-interact').getYesNo;
+    return query(consoleAssertion);
+};
+
+// set where the ask string will be displayed and the response will be coming from
+Iif.prototype.askOn = function (location) {
+
+  this._askOn = location || 'console';
+
+};
+
+Iif.prototype.askConsole = function (assertion) {
 
 
 };
+
+Iif.prototype.askHTML = function (assertion) {
+
+
+};
+
+
+Iif.prototype.ask = function (assertion) {
+
+  if(this._askOn === 'console') {
+
+    if(!this.factStack.hasOwnProperty(assertion)) { 
+      // assertion is not already known
+      //console.log('IS THIS TRUE: ' + assertion);
+      var assertionState = this.consoleQuery('IS THIS TRUE: ' + assertion);
+      if (assertionState = 'y') {
+        assertionState = true;
+      } else {
+        assertionState = false;    
+      }
+      this.factStack[assertion] = assertionState;
+      return assertionState;
+    } else { 
+      // the assertion is already a known fact
+      return this.factStack[assertion];
+    }
+  } else if (this._askOn === 'html') {
+    this.askHTMl(assertion);
+  } else {
+    // askOn not supported
+console.log("here");
+      try {
+      throw new Error("IIF Error: requested ASK handler not found: " + this._askOn);
+      }
+      catch (error) {
+        throw error;
+        return 0;
+      }
+  }
+};
+
+
+// set or return a fact's asserted value
+// a fact can be true, a number or a string value
+Iif.prototype.facts = function (name, value) {
+  if (value === true || value === false) {
+    this.factStack[name] = value;
+    return value;
+  } else {
+    return this.factStack[name];
+  }
+}
 
 module.exports = Iif;
