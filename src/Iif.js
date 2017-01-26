@@ -193,20 +193,6 @@ Iif.prototype.askOn = function (location) {
 };
 
 Iif.prototype.askConsole = function (assertion) {
-
-
-};
-
-Iif.prototype.askHTML = function (assertion) {
-
-
-};
-
-
-Iif.prototype.ask = function (assertion) {
-
-  if(this._askOn === 'console') {
-
     if(!this.factStack.hasOwnProperty(assertion)) { 
       // assertion is not already known
       //console.log('IS THIS TRUE: ' + assertion);
@@ -222,18 +208,33 @@ Iif.prototype.ask = function (assertion) {
       // the assertion is already a known fact
       return this.factStack[assertion];
     }
+};
+
+Iif.prototype.askHTML = function (assertion) {
+
+
+};
+
+
+Iif.prototype.ask = function (assertion) {
+
+  if(this._askOn === 'console') {
+
+     return this.askConsole(assertion);
+
   } else if (this._askOn === 'html') {
-    this.askHTMl(assertion);
+
+     return this.askHTMl(assertion);
+
   } else {
-    // askOn not supported
-console.log("here");
-      try {
+    // requested askOn not supported
+    try {
       throw new Error("IIF Error: requested ASK handler not found: " + this._askOn);
-      }
-      catch (error) {
-        throw error;
-        return 0;
-      }
+    }
+    catch (error) {
+      throw error;
+      return 0;
+    }
   }
 };
 

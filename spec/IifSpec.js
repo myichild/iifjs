@@ -40,8 +40,8 @@ describe("Iif functionality::", function () {
     ],
     };
 
-  var askTest = {
-    properties: "this.maxCycles = 1000000; this.count = 0; this.stopAt = this.maxCycles; this.state = false; this.gender = 'male'; this.age = 'minor'; this.orientation = 'straight'",
+  var askTestKB = {
+    properties: "this.maxCycles = 1000000; this.count = 0; this.stopAt = this.maxCycles; this.state = false;",
     rules: [
       { name: "Gender",
         ask: 'are you female',
@@ -51,7 +51,7 @@ describe("Iif functionality::", function () {
              because: 'if you are not male then you are female or intersex'},
       { name: "Age",
         ask: 'are you older than 16 years',
-             then: 'this.fact = "adult";',
+             then: 'this.fact("adult") = true;',
              priority: 1,
              repeatable: false,
              because: 'if you are sixteen or younger you are a minor'},
@@ -173,10 +173,10 @@ describe("Iif functionality::", function () {
       var assertion = 'an unknown fact';
       iif.askOn('database');
       var rv;
-//      var testIifAsk = function () {
-//        rv = iif.ask(assertion);
-//      }
-//      expect(testIifAsk).toThrow('IIF Error: requested ASK handler not found: database.');
+      var testIifAsk = function () {
+        rv = iif.ask(assertion);
+      }
+      expect(testIifAsk).toThrowError("IIF Error: requested ASK handler not found: " + iif._askOn);
 
     });
 
@@ -209,10 +209,21 @@ describe("Iif functionality::", function () {
 
     });
 
+    it("Should perform multiple asks when an array of assertions is present in an ask: property", function (){
+// TODO: Is this feature needed in a minimal system??
+
+    });
+
     it("Should read a rule and either execute an ASK and and IF when either or both are present", function (){
 
+      spyOn(iif, 'ask');
 
+      iif.load(askTestKB);
 
+      iif.run();
+
+      expect(iif.ask).toHaveBeenCalled();
+    
     });
 
 
