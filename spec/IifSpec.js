@@ -42,22 +42,24 @@ describe("Iif functionality::", function () {
 
   var askTestKB = {
     properties: "this.maxCycles = 1000000; this.count = 0; this.stopAt = this.maxCycles; this.state = false;",
+    facts: {"_present": true, "adult": true},
     rules: [
       { name: "Gender",
-        ask: 'are you female',
-             then: 'this.gender = "female";',
+        if: 'this.facts("adult") === true',
+             then: 'this.underAge = false;',
              priority: 1,
              repeatable: false,
              because: 'if you are not male then you are female or intersex'},
       { name: "Age",
         ask: 'are you older than 16 years',
-             then: 'this.fact("adult") = true;',
+             then: 'this.facts("adult", true);',
              priority: 1,
              repeatable: false,
              because: 'if you are sixteen or younger you are a minor'},
       { name: "Orientation",
+        if: 'this.facts("adult") === true',
         ask: 'you identify as gay/bi/other',
-             then: 'this.fact("orientation", "other");',
+             then: 'this.facts("orientation", "other");',
              priority: 10,
              because: 'tell us about your gender identification'}
     ],
@@ -111,19 +113,55 @@ describe("Iif functionality::", function () {
     describe("The fact stack is not needed in the benchmark tests", function (){
         it("Should report a false value for the present: fact", function (){
           iif.load(kbTest);
-          expect(iif.facts._present).toBe(false);
+          expect(iif.facts("_present")).toBe(false);
       });
     });
 
   });
 
-  describe("Execution of if and then clauses", function () {
-    it("Should execute a rule's if clause", function () {
-      iif.load(kbTest);
-      // var rulestack = iif.rules;
-      expect(iif.rules.constructor === Array).toBe(true);
-      expect(iif.rules[0].if.constructor === String).toBe(true);
-      expect(iif.executeIf(iif.rules[0].if)).toBe(true);
+  describe("Execution of if and then clauses,", function () {
+
+    describe("How the if and ask clauses work,", function () {
+      // indexes for test rules
+      var hasLoneIf = 0, hasLoneAsk = 1, hasIfAndAsk = 2;
+
+      beforeEach(function(){
+
+      spyOn(iif, 'ask').and.returnValue(true);
+
+      
+      iif.askOn('console');
+      iif.load(askTestKB);
+
+      });
+
+      it("Should execute a rule's if clause.", function () {
+        iif.load(kbTest);
+        // var rulestack = iif.rules;
+        expect(iif.rules.constructor === Array).toBe(true);
+        expect(iif.rules[hasLoneIf].if.constructor === String).toBe(true);
+//        expect(iif.executeIf(iif.rules[hasLoneIf].if)).toBe(true);
+        rv = undefined;
+        rv = iif.testAssertions(iif.rules[hasLoneIf]);
+        expect(rv).toBe(true);
+      });
+
+      it("Should execute a rules ask clause.", function (){
+        iif.debug = true;
+        rv = undefined;
+        rv = iif.testAssertions(iif.rules[hasLoneAsk]);
+        expect(iif.ask).toHaveBeenCalled();
+        expect(rv).toBe(true);
+      });
+
+      it("Should execute both an if and an ask clause.", function (){
+        iif.debug = true;
+        rv = undefined;
+        rv = iif.testAssertions(iif.rules[hasIfAndAsk]);
+        expect(iif.ask).toHaveBeenCalled();
+        expect(rv).toBe(true);
+      });
+
     });
 
     it("Should execute a rule's then clause", function () {
@@ -216,14 +254,7 @@ describe("Iif functionality::", function () {
 
     it("Should read a rule and either execute an ASK and and IF when either or both are present", function (){
 
-      spyOn(iif, 'ask');
-
-      iif.load(askTestKB);
-
-      iif.run();
-
-      expect(iif.ask).toHaveBeenCalled();
-    
+   
     });
 
 

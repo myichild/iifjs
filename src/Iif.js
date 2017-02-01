@@ -24,7 +24,7 @@ Iif.prototype.load = function (kb) {
   var txt = kb.properties;
   eval(txt);
   this.rules = kb.rules;
-  this.facts = kb.facts || {_present: false};
+  this.factStack = kb.facts || {_present: false};
   var ruleLen = kb.rules.length;
   for (var r=0; r < ruleLen; r++) {
     kb.rules[r].fired = 0;
@@ -80,6 +80,43 @@ Iif.prototype.executeIf = function (ifClause) {
   return eval(ifClause);
 };
 
+// test an if: and/or ask: clauses
+//
+Iif.prototype.testAssertions = function (rule) {
+
+  var rv = 0, clause = 0;
+
+  if(rule.hasOwnProperty('if')) {
+    this.log("Testing IF: " + JSON.stringify(rule.if));
+    clause = clause | 1;
+   if(this.executeIf(rule.if)) {
+      rv = rv | 1;
+    }
+  } 
+
+  if(rule.hasOwnProperty('ask')) {
+    this.log("Testing ASK: " + JSON.stringify(rule.ask));
+    clause = clause | 2;
+    if(this.ask(rule.ask)) {
+      rv = rv | 2;
+    }
+  }
+this.log('RV: ' + rv + ' clause cnt: ' + clause);
+  if(clause === 3 && rv === 3) {
+    return true;
+  } else if ((clause === 1 || clause === 2) && (rv === 1 || rv === 2)) {
+    return true;
+  } else {
+    return false;
+  }
+//  if(rv > 0) {
+//    if(clause === 3)
+//    return true;
+//  } else {
+//    return false;
+//  }
+};
+
 // execute a then clause
 //
 Iif.prototype.executeThen = function (thenClause) {
@@ -126,7 +163,8 @@ Iif.prototype.infer = function () {
       // if the rule has not fired previously or if the rule is repeatable then check it
       if(rule.fired < 1 || rule.repeatable === true){
         this.log('Testing Rule: ' + rule.name + ', IIF => ' + rule.if);
-        if (this.executeIf(rule.if)) {
+ // WIP       if (this.executeIf(rule.if)) {
+        if(this.testAssertions(rule)) {
           this.log('TRUE');
           // check if it is the best so far
           this.log('Rule to check[' + i + '] => ' + rule.name + ' prority => ' + rule.priority);
@@ -195,7 +233,6 @@ Iif.prototype.askOn = function (location) {
 Iif.prototype.askConsole = function (assertion) {
     if(!this.factStack.hasOwnProperty(assertion)) { 
       // assertion is not already known
-      //console.log('IS THIS TRUE: ' + assertion);
       var assertionState = this.consoleQuery('IS THIS TRUE: ' + assertion);
       if (assertionState = 'y') {
         assertionState = true;
