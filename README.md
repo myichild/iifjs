@@ -57,8 +57,16 @@ Originally this function was written in Forth (circa 1979) and used with a
 Reuters Foreign Exchange price feed from a PDP-8. The price protocol structure changed with currency pairs, we spent six weeks not getting the in line code to
 run reliably. Switching to a rule engine we had it working reliably in 48 hours.
 
-Since then I have rewritten in Perl and Ruby, using it within a number of
+Other applications it has been used in are:
+
+Since its original form I have rewritten it in Perl and Ruby, using it within a number of
 software products and services.
+
+
+- PC software license auditor.
+- IT security audits.
+- Financial trading system.
+- Self profiling web application.
 
 ## Performance.
 
