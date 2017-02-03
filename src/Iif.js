@@ -134,7 +134,17 @@ Iif.prototype.run = function () {
   catch (error) {
     throw error;
     return 0;
+  };
+
+  try {
+    if (this.kbstate === 'active') {
+      throw new Error("IIF Error: KB has already run to completion");
+    }
   }
+  catch (error) {
+    throw error;
+    return 0;
+  };
   // run inference
   // infer() returns the number of cycles the engine has run
   return this.infer();
@@ -144,6 +154,7 @@ Iif.prototype.run = function () {
 // inference continues as long as a rule is fired
 //
 Iif.prototype.infer = function () {
+  // check infer is not being 
   // start inference
   this.running = true;
   this.cycles = 0;
@@ -201,6 +212,12 @@ Iif.prototype.infer = function () {
   } while (this.fired === true && this.running === true);
   // clean up
   return this.cycles;
+};
+
+// returns true if the KB has already been run
+// at least one rule has fired  (running === false || this.best > 0 )
+Iif.prototype.done = function () {
+  return this.kbstate === 'active';
 };
 
 
