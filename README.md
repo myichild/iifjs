@@ -54,14 +54,13 @@ time. Your code becomes easier to read.
 ## History.
 
 Originally this function was written in Forth (circa 1979) and used with a
-Reuters Foreign Exchange price feed from a PDP-8. The price protocol structure changed with currency pairs, we spent six weeks not getting the in line code to
-run reliably. Switching to a rule engine we had it working reliably in 48 hours.
-
-Other applications it has been used in are:
+Reuters Foreign Exchange price feed from a PDP-8. The price protocol structure changed with currency pairs, we spent six weeks failing to get the in line code to
+run reliably. Switching to a rule engine we had it working reliably within 48 hours.
 
 Since its original form I have rewritten it in Perl and Ruby, using it within a number of
 software products and services.
 
+Other applications it has been used in are:
 
 - PC software license auditor.
 - IT security audits.
