@@ -1,4 +1,4 @@
-![alt text](docs/logo.png "Inference IF engine")
+<img align="right" src="docs/logo.png" height = "100px" width = "150px">
 # iifjs Inference IF Engine
 
 ## Simple Inference Engine for javascript
