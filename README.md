@@ -1,10 +1,12 @@
-<img align="right" src="docs/logo.png" height = "100px" width = "150px">
-# iifjs Inference IF Engine
+<img align="left" src="docs/logo.png" height = "100px" width = "150px">
+# iif.js Inference IF Engine
 
 ## Simple Inference Engine for javascript
 
-Enables you to include an inference function directly within your javascript
-code.
+Include an inference function directly within your javascript code.
+
+Implements a forward chaininge expert system working with facts and
+javascript code within the inference process.
 
 ## Use it for:
 
