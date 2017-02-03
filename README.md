@@ -1,10 +1,12 @@
-![alt text](docs/logo.png "Inference IF engine")
-# iifjs Inference IF Engine
+<img align="left" src="docs/logo.png" height = "100px" width = "150px">
+# iif.js Inference IF Engine
 
 ## Simple Inference Engine for javascript
 
-Enables you to include an inference function directly within your javascript
-code.
+Include an inference function directly within your javascript code.
+
+Implements a forward chaining expert system working with facts and
+javascript code within the inference process.
 
 ## Use it for:
 
@@ -75,4 +77,75 @@ git clone https://github.com/myichild/iifjs.git iifjs
 
 Add Iif.js to your application
 
-Copy the file ./iifjs/src/Iif.js in your application's src/ or lib/directory.
+Copy the file ./iifjs/src/Iif.js into your application's src/ or lib/directory.
+
+## Example - Benchmark flip-flop minimal rule set
+
+This knowledge base demonstrates:
+
+- adding properties to the KB object for use in your code.
+
+- the rule structure, a list of rule objects in a KB object.
+
+- how to use KB object properties within rules.
+
+- how to force the end of inference from a stop rule.
+
+- how to make a rule re-testable with the repeatable: property 
+
+When the inference process terminates the KB state will reflect the conclusion
+reached. This may be a result in a property or a change of state in the 
+fact stack. In the example below when rule "Count up to stop" fires it adds
+a fact "Test Concluded" with a status of true to the fact stack.
+
+```javascript
+
+  var Iif = require('../src/Iif.js');
+
+  var benchMarkKB = {
+    properties: "this.maxCycles = 1000000; this.count = 0; this.stopAt = this.maxCycles; this.state = false;",
+    rules: [
+      { name: "Flip",
+             if: 'this.state === false',
+             then: 'this.state = true; this.count++;',
+             priority: 1,
+             repeatable: true,
+             because: 'Flips false state to true'},
+      { name: "Flop",
+        if: 'this.state === true',
+             then: 'this.state = false; this.count++;',
+             priority: 1,
+             repeatable: true,
+             because: 'Flips a true state to false'},
+      { name: "Count up to stop",
+        if: 'this.count >= this.stopAt && this.running === true',
+             then: 'this.running = false; this.fact("Test Concluded", true)',
+             priority: 10,
+             because: 'Stop the engine with a stop rule because we have repeatable rules'}
+      ],
+    };
+
+// create an inference object
+var iif = new Iif(); 
+
+// load a knowledge base
+iif.load(benchMarkKB);
+
+var start = new Date();
+
+// run inference
+iif.run();
+
+var stop = new Date();
+
+if(iif.done === true) {
+  console.log("Test conducted OK");
+} else {
+console.log("Test failed to run");
+}
+
+// report the benchmark performance for one million cycles
+console.log('Lapsed time for ' + iif.maxCycles + ' inference cycles = ' + lapsed + ' seconds.');
+console.log('Inference Rate: ' + Math.floor((iif.cycles + 0)/lapsed) + ' rules per second.');
+
+```

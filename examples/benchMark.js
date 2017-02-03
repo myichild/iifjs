@@ -37,8 +37,8 @@ var stop = new Date();
 
 var lapsed = ((stop - start)/1000);
 
-if(iif.done === true) {
-  console.log("Test conducted OK");
+if(iif.done() === true) {
+  console.log("Test conducted OK ");
 } else {
 console.log("Test failed to run");
 }
