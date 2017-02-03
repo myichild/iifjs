@@ -5,7 +5,7 @@
 
 Include an inference function directly within your javascript code.
 
-Implements a forward chaininge expert system working with facts and
+Implements a forward chaining expert system working with facts and
 javascript code within the inference process.
 
 ## Use it for:
