@@ -1,3 +1,4 @@
+![alt text](docs/logo.png "Inference IF engine")
 # iifjs Inference IF Engine
 
 ## Simple Inference Engine for javascript
