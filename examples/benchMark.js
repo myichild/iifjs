@@ -19,7 +19,7 @@
              because: 'Flips a true state to false'},
       { name: "Count up to stop",
         if: 'this.count >= this.stopAt && this.running === true',
-             then: 'this.running = false;',
+             then: 'this.running = false; this.facts("Test Concluded", true);',
              priority: 10,
              because: 'Stop the engine with a stop rule because we have repeatable rules'}
       ],
@@ -40,8 +40,12 @@ var lapsed = ((stop - start)/1000);
 if(iif.done() === true) {
   console.log("Test conducted OK ");
 } else {
-console.log("Test failed to run");
+  console.log("Test failed to run");
 }
+
+// can see the fact stack has changed as a result
+
+console.log('Fact stack records a conclusion for "Test Concluded" is ' + iif.facts("Test Concluded"))
 
 // report the benchmark performance for one million cycles
 console.log('Lapsed time for ' + iif.maxCycles + ' inference cycles = ' + lapsed + ' seconds.');
