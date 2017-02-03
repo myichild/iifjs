@@ -262,8 +262,6 @@ describe("Iif functionality::", function () {
 //        });
 //      });
 //        it("Running again will do nothing until KB has been reset", function () {
-//          expect(iif.running).toBe('WTF');
-//          expect(iif.run()).toBe('unhappy');
             expect(function() {
               iif.run();
             }).toThrowError("IIF Error: KB has already run to completion");
