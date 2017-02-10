@@ -1,4 +1,6 @@
 // Interactive test for ask on the command line
+// this knowledge base shows how use ask: and thenAsk: clauses
+// Note: Gathering 
 var Iif = require('../src/Iif.js');
 
 var iif = new Iif();
@@ -17,10 +19,11 @@ var askFacts = {
       thenAsk: "you are female"
     },
     {
-      name: "Test for girl",
+      name: "Test for girl likes computer games",
       priority: 90,
       repeatable: false,
       if: "this.facts('you are a child') === true && this.facts('you are female') === true",
+      ask: "computer games are cool",
       then: "this.facts('gender', 'female');this.log('Female');" // add a new fact
     },
     {

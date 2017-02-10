@@ -94,7 +94,7 @@ Iif.prototype.testAssertions = function (rule) {
     }
   } 
 
-  if(rule.hasOwnProperty('ask')) {
+  if((rv === 1 && rule.hasOwnProperty('ask')) || !rule.hasOwnProperty('if')) {
     this.log("Testing ASK: " + JSON.stringify(rule.ask));
     clause = clause | 2;
     if(this.ask(rule.ask)) {
@@ -174,7 +174,6 @@ Iif.prototype.infer = function () {
       // if the rule has not fired previously or if the rule is repeatable then check it
       if(rule.fired < 1 || rule.repeatable === true){
         this.log('Testing Rule: ' + rule.name + ', IIF => ' + rule.if);
- // WIP       if (this.executeIf(rule.if)) {
         if(this.testAssertions(rule)) {
           this.log('TRUE');
           // check if it is the best so far
