@@ -194,6 +194,11 @@ Iif.prototype.infer = function () {
     //fire the best rule
     if (this.fired === true) {
       // execute the best rule's then clause
+      // first check to see if a user is being asked to assert
+      if (this.rules[this.best].hasOwnProperty('thenAsk')) {
+        this.ask(this.rules[this.best].thenAsk);
+      }
+      // now fire then:
       this.executeThen(this.rules[this.best].then);
       this.kbstate = 'active';
       // update the rules fired counter
@@ -251,7 +256,8 @@ Iif.prototype.askConsole = function (assertion) {
     if(!this.factStack.hasOwnProperty(assertion)) { 
       // assertion is not already known
       var assertionState = this.consoleQuery('IS THIS TRUE: ' + assertion);
-      if (assertionState = 'y') {
+      this.log('Response to [' + assertion + '] is, ' + assertionState);
+      if (assertionState === true) {
         assertionState = true;
       } else {
         assertionState = false;    
@@ -292,16 +298,37 @@ Iif.prototype.ask = function (assertion) {
   }
 };
 
+// ask then
+Iif.prototype.thenAsk == function (assertion) {
+
+  return this.ask(assertion);
+
+};
+
 
 // set or return a fact's asserted value
 // a fact can be true, a number or a string value
 Iif.prototype.facts = function (name, value) {
-  if (value === true || value === false) {
+  if (value === true || value === false || value !== undefined) {
     this.factStack[name] = value;
     return value;
   } else {
     return this.factStack[name];
   }
-}
+};
+
+Iif.prototype.ls = function (fact) {
+  if(fact) {
+    console.log(fact + ' is ' + this.facts(fact));
+  } else {
+    console.log('\n\nFacts for KB: ' + this.name);
+    for (var thisFact in this.factStack) {
+      console.log('\t\t' + thisFact + ' is ' + this.facts(thisFact));
+    }
+    console.log('\n\n');
+  }
+
+
+};
 
 module.exports = Iif;
